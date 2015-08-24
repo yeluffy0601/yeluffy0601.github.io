@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Luffy's Blog]]></title>
+  <subtitle><![CDATA[我就随便写写..]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://yoursite.com/"/>
+  <updated>2015-08-24T03:54:50.287Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name><![CDATA[Luffy]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[test2]]></title>
+    <link href="http://yoursite.com/2015/08/24/test2/"/>
+    <id>http://yoursite.com/2015/08/24/test2/</id>
+    <published>2015-08-24T02:59:16.000Z</published>
+    <updated>2015-08-24T03:54:50.287Z</updated>
+    <content type="html"><![CDATA[<p>hahahahha<br><a id="more"></a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>hahahahha<br>]]>
+    
+    </summary>
+    
+      <category term="test" scheme="http://yoursite.com/tags/test/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[test]]></title>
+    <link href="http://yoursite.com/2015/08/23/test/"/>
+    <id>http://yoursite.com/2015/08/23/test/</id>
+    <published>2015-08-23T12:33:58.000Z</published>
+    <updated>2015-08-24T03:54:40.049Z</updated>
+    <content type="html"><![CDATA[<p><strong>沙发*</strong>撒旦*</p>
+<blockquote>
+<p>爱生活<br><a id="more"></a><br><code>#include&lt;iostream&gt;</code><br><br>sd saf # saf #</p>
+<h2 id="asf">asf</h2><p><a href="http://www.baidu.com" target="_blank" rel="external">http://www.baidu.com</a></p>
+<ul>
+<li>saf </li>
+<li>asf </li>
+<li>ag</li>
+<li>af</li>
+<li><img src="http://yeluffy0601.github.io/assets/blogImg/luffy.jpg" alt=""></li>
+</ul>
+<ol>
+<li>2015/8/24 11:38:20 </li>
+<li>saf<br></li>
+<li>as</li>
+</ol>
+</blockquote>
+<hr>
+<p>ddfsfa<br>dasfasfafsasf<br><br>asf</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><strong>沙发*</strong>撒旦*</p>
+<blockquote>
+<p>爱生活<br>]]>
+    
+    </summary>
+    
+      <category term="java" scheme="http://yoursite.com/tags/java/"/>
+    
+      <category term="test" scheme="http://yoursite.com/tags/test/"/>
+    
+  </entry>
+  
+</feed>
