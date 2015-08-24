@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title><![CDATA[不要笑我的笨]]></title>
-  <subtitle><![CDATA[梦想是一定要有的..万一实现了呢..]]></subtitle>
+  <subtitle><![CDATA[梦想是一定要有的.. 万一实现了呢..]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
   <updated>2015-08-24T03:54:50.287Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
-    <name><![CDATA[Boom丶]]></name>
+    <name><![CDATA[Boom]]></name>
     
   </author>
   
