@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>《深入理解Java虚拟机》学习笔记（2） | 不要笑我的笨</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文学习了Java的内存区域和内存溢出异常。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Java虚拟机》学习笔记（2）">
+<meta property="og:url" content="http://yoursite.com/2015/08/25/JVM-2/index.html">
+<meta property="og:site_name" content="不要笑我的笨">
+<meta property="og:description" content="本文学习了Java的内存区域和内存溢出异常。">
+<meta property="og:image" content="http://www.ddupfly.com/assets/2/1.jpg">
+<meta property="og:image" content="http://www.ddupfly.com/assets/2/2.jpg">
+<meta property="og:image" content="http://www.ddupfly.com/assets/2/3.jpg">
+<meta property="og:updated_time" content="2015-08-25T04:18:48.681Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Java虚拟机》学习笔记（2）">
+<meta name="twitter:description" content="本文学习了Java的内存区域和内存溢出异常。">
+  
+    <link rel="alternative" href="/atom.xml" title="不要笑我的笨" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://yeluffy0601.github.io/assets/blogImg/luffy.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Boom</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">梦想是一定要有的.. 万一实现了呢..</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/yeluffy0601/" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/ddupfly" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/《深入理解Java虚拟机》/" style="font-size: 10px;">《深入理解Java虚拟机》</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">本人聪明但不够勤奋，所幸觉醒的未晚，决心在此深入钻研技术、夯实基础。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Boom</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://yeluffy0601.github.io/assets/blogImg/luffy.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Boom</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">梦想是一定要有的.. 万一实现了呢..</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/yeluffy0601/" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/ddupfly" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-JVM-2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/08/25/JVM-2/" class="article-date">
+  	<time datetime="2015-08-25T02:15:34.000Z" itemprop="datePublished">2015-08-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《深入理解Java虚拟机》学习笔记（2）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/《深入理解Java虚拟机》/">《深入理解Java虚拟机》</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文学习了Java的内存区域和内存溢出异常。<br><a id="more"></a></p>
+<h1 id="1-_运行时数据区域">1. 运行时数据区域</h1><p><img src="http://www.ddupfly.com/assets/2/1.jpg" alt=""></p>
+<ol>
+<li>程序计数器<br>一块较小的内存空间，可以看作是当前线程所执行的字节码的行号指示器。<br>由于Java虚拟机的多线程是通过线程切换并分配处理器执行时间的方式来实现的，在任何一个确定的时刻，一个处理器（对多核处理器是一个内核）都只会执行一条线程中的指令。因此，为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，这类区域称为“线程私有”的内存。<br>如果线程正在执行Java方法，计数器记录的是正在执行的虚拟机字节码指令的地址；如果是Native方法，计数器值为空（Undefined）。<br>此内存是唯一一个<strong>没有</strong>规定任何<code>OutOfMemoryError</code>情况的区域。</li>
+<li>Java虚拟机栈<br>线程私有，生命周期与线程相同。<br>描述的是Java方法执行的内存模型：每个方法在执行的同时都会创建一个栈帧用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用直至执行完成的过程，为入栈到出栈的过程。<br>局部变量表存放了编译器可知的各种基本数据类型（boolean、byte、char、long、short、int、flort、double）、对象应用（reference类型）和returnAddress类型（指向一条字节码指令的地址）。long和double占用2个，其余基本数据类型为1个局部变量空间。局部变量表所需的内存空间在编译期间完成分配，方法运行期间不会改变。<br>线程请求的栈深度大于虚拟机所允许的深度，抛出<code>StackOverflowError</code>异常；如果虚拟机动态扩展时无法申请到足够内存，抛出<code>OutOfMemoryError</code>异常。</li>
+<li>本地方法栈<br>与虚拟机栈类似，区别为其为Native方法服务。<br>具体的虚拟机可以自由实现它，甚至Sun HotSpot虚拟机将其和虚拟机栈合二为一。<br>异常抛出同上。</li>
+<li>Java堆<br>Java堆（Java Heap）是Java虚拟机所管理的内存中最大的一块。被所有线程共享，在虚拟机启动时创建，唯一目的就是存放对象实例，以及数组。<br>Java堆是垃圾收集器管理的主要区域，也可称为GC堆。从内存回收角度看，基于分代收集算法，Java堆细分为新生代和老年代，新生代包括Eden空间，From Survivor空间，To Survivor空间等。从内存分配角度看，线程共享的Java堆可能划分多个线程私有的分配缓冲区（TLAB）。<br>Java可以处于物理上不连续的内存空间，只要逻辑上是连续的即可，当前主流虚拟机可动态扩展（通过-Xmx和-Xms控制）。如果堆中内存不足，并且堆无法扩展，抛出<code>OutOfMemoryError</code>异常。</li>
+<li>方法区<br>各个线程共享，用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。方法区为堆的一个逻辑部分，但成为Non-Heap（非堆），目的是与Java堆区分。<br>对HotSpot，于可把方法区分为永久代（Permanent Generation），因为GC分代收集扩展到方法区。但这样更容易遇到内存溢出问题，官方也有放弃永久代改用Native Memory来实现方法区的规划。在JDK1.7中，已经把原本放在永久代的字符串常量池溢出至堆中。对此区域未完全回收将导致内存泄露。<br>当方法区无法满足内存分配需求时，将抛出<code>OutOfMemoryError</code>异常。</li>
+<li>运行时常量池<br>它是方法区的一部分。Class文件除了有类的版本、字段、方法、接口等描述信息外，还有常量池，用于存放编译期生成的各种字面量和符号应用，这部分内容将在类加载后，存放到方法区的运行时常量池。<br>运行时常量池具备动态性，在运行期间也可能将新的常量放入此中，例如String的intern()方法。<br>当常量池无法再申请到内存时抛出<code>OutOfMemoryError</code>异常。</li>
+<li>直接内存<br>并不是虚拟机运行时数据区的一部分。在各个内存区域总和加上直接内存大于物理内存的限制，也可能抛出<code>OutOfMemoryError</code>异常。</li>
+</ol>
+<h1 id="2-_HotSpot虚拟机对象">2. HotSpot虚拟机对象</h1><ol>
+<li>对象的创建<br>虚拟机遇到一条new指令时，首先将去检查这个指令的参数是否能在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，先执行相应的类加载过程。<br>在类加载检查通过后，虚拟机为新生对象从Java堆中分配内存。对象所需内存的大小在类加载完成后便完全确定。<br>假设Java堆中内存是绝对规整的，所有用过的内存放一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，那分配内存就是挪动指针。这种分配方式称为<strong>“指针碰撞”</strong>。<br>假设Java堆中内存不是规整的，用过的与空闲的相互交错，虚拟机必须维护一个列表，记录哪些内存块可用。这种分配方式称为<strong>“空闲列表”</strong>。<br>选择哪种分配方式由Java堆是否规整决定，它由所采用的垃圾收集器是否带有压缩整理功能决定。在使用Serial、ParNew等带Compact过程的收集器是指针碰撞，而使用CMS这种基于Mark-Sweep算法的收集器，采用空闲列表。并发情况下，并不是线程安全的。<br>内存分配完成后，虚拟机需要将分配到的内存空间都初始化为零值（不包括对象头）。<br>接下来，虚拟机对对象进行必要的设置，例如这个对象是哪个类的实例，如何才能找到类的元数据信息，对象的哈希码，对象的GC分代年龄等信息，这些存放在对象的对象头之中。<br>至此，以虚拟机的角度看，一个新的对象已经产生，但从Java程序的角度看，对象创建才刚刚开始，还须init初始化操作。</li>
+<li>对象的内存布局<br>对象在内存的布局分为3块：对象头，实例数据和对齐填充。<br>对象头包括两部分信息，一是用于存储对象自身的运行时数据，如哈希码，GC分代年龄，锁状态标志，线程持有的锁，偏向线程ID，偏向时间戳等，成为Mark Word。另一部分是类型指针，即对象指向它的类元数据的指针，虚拟机通过这个指针确定是哪个类的实例。如果对象是Java数组，对象头中还须记录数组长度。<br>接下来的实例数据部分是对象真正存储的有效信息，也是在程序代码中所定义的各种类型的字段内容。<br>第三部分是对齐填充，起占位符的作用，HotSpot VM的自动内存管理系统要求对象起始地址必须是8字节的整数倍。对象头正好为8字节的1倍或2倍。</li>
+<li>对象的访问定位<br>栈上的reference数据来操作堆上的具体对象，对象的访问方式，取决于虚拟机实现。主流有2种。<br>如果用句柄访问。</li>
+</ol>
+<p><img src="http://www.ddupfly.com/assets/2/2.jpg" alt=""></p>
+<p>如果使用字节指针访问</p>
+<p><img src="http://www.ddupfly.com/assets/2/3.jpg" alt=""></p>
+<p>各有优势，使用句柄最大好处是reference中存储的是稳定的句柄地址，在对象被移动时（垃圾收集移动对象）只会改变句柄中的实例数据指针，而reference本身不用改变。使用直接指针最大好处是速度更快，节省了一次指针定位的时间开销。Sun HotSpot采用第二种进行对象访问。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/08/24/JVM-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《深入理解Java虚拟机》学习笔记（1）</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="JVM-2" data-title="《深入理解Java虚拟机》学习笔记（2）" data-url="http://yoursite.com/2015/08/25/JVM-2/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"ddupfly"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 Boom
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
