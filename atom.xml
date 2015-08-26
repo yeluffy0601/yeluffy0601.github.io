@@ -4,7 +4,7 @@
   <subtitle><![CDATA[梦想是一定要有的.. 万一实现了呢..]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2015-08-26T07:31:25.672Z</updated>
+  <updated>2015-08-26T07:34:47.444Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,10 +16,10 @@
   
   <entry>
     <title><![CDATA[《深入理解Java虚拟机》学习笔记（3）]]></title>
-    <link href="http://yoursite.com/2015/08/25/JVM-3/"/>
-    <id>http://yoursite.com/2015/08/25/JVM-3/</id>
-    <published>2015-08-25T06:42:20.000Z</published>
-    <updated>2015-08-26T07:31:25.672Z</updated>
+    <link href="http://yoursite.com/2015/08/26/JVM-3/"/>
+    <id>http://yoursite.com/2015/08/26/JVM-3/</id>
+    <published>2015-08-26T07:34:45.000Z</published>
+    <updated>2015-08-26T07:34:47.444Z</updated>
     <content type="html"><![CDATA[<p>本文学习了垃圾收集器与内存分配策略。<br><a id="more"></a></p>
 <h1 id="1-_对象是否存活">1. 对象是否存活</h1><ol>
 <li><p>引用计数算法<br>给对象中添加一个引用计数器，每当有一个地方引用它时，计数器就加1；当引用失效时，计数器值就减1；任何时刻计数器为0的对象就是不可能再被使用的。<br>客观地讲，引用计数算法的实现简单，判断效率也很高，例如微软的COM技术，Python语言等都使用了引用计数算法进行内存管理。<br>但是缺点是它很难解决对象之间相互循环引用的问题。</p>
@@ -94,7 +94,7 @@
 <li>最终标记</li>
 <li>筛选回收</li>
 </ul>
-<p>初始标记阶段仅仅只是标记一下GC Roots能直接关联到的对象，并且修改TAMS（Next Top at Mark Start）的值，让下一阶段用户程序并发运行时，能在正确可用的Region中创建新对象，这阶段需要停顿线程，但耗时很短。并发标记阶段是从GC Root开始对堆中对象进行可达性分析，找出存活的对象，这阶段耗时较长，但可与用户程序并发执行。而最终标记阶段则是为了修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分标记记录，虚拟机将这段时间对象变化记录在线程Remembered Set Logs里面，最终标记阶段需要把Remembered Set Logs的数据合并到Remembered Set中，这阶段需要停顿线程，但是可并行执行。最后筛选回收阶段首先对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来制定回收计划，从Sun透露出来的信息来看，这个阶段其实也可以做到与用户程序一起并发执行，但是因为只回收一部分Region，时间是用户可控制的，而且停顿用户线程将大幅提高收集效率。<br><img src="http://www.ddupfly.com/assets/3/9.jpg" alt=""></p>
+<p>初始标记阶段仅仅只是标记一下GC Roots能直接关联到的对象，并且修改TAMS（Next Top at Mark Start）的值，让下一阶段用户程序并发运行时，能在正确可用的Region中创建新对象，这阶段需要停顿线程，但耗时很短。并发标记阶段是从GC Root开始对堆中对象进行可达性分析，找出存活的对象，这阶段耗时较长，但可与用户程序并发执行。而最终标记阶段则是为了修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分标记记录，虚拟机将这段时间对象变化记录在线程Remembered Set Logs里面，最终标记阶段需要把Remembered Set Logs的数据合并到Remembered Set中，这阶段需要停顿线程，但是可并行执行。最后筛选回收阶段首先对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来制定回收计划，从Sun透露出来的信息来看，这个阶段其实也可以做到与用户程序一起并发执行，但是因为只回收一部分Region，时间是用户可控制的，而且停顿用户线程将大幅提高收集效率。<br><img src="http://www.ddupfly.com/assets/3/9.png" alt=""></p>
 </li>
 <li>垃圾收集器参数总结<br><img src="http://www.ddupfly.com/assets/3/10.jpg" alt=""></li>
 </ol>
