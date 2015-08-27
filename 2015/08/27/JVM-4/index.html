@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>《深入理解Java虚拟机》学习笔记（4） | 不要笑我的笨</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文学习了虚拟机类加载机制。虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。在Java语言里，类型的加载、连接和初始化过程都是在程序运行期间完成的。这是Java的可以动态扩展的语言特性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Java虚拟机》学习笔记（4）">
+<meta property="og:url" content="http://yoursite.com/2015/08/27/JVM-4/index.html">
+<meta property="og:site_name" content="不要笑我的笨">
+<meta property="og:description" content="本文学习了虚拟机类加载机制。虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。在Java语言里，类型的加载、连接和初始化过程都是在程序运行期间完成的。这是Java的可以动态扩展的语言特性。">
+<meta property="og:image" content="http://www.ddupfly.com/assets/4/1.jpg">
+<meta property="og:updated_time" content="2015-08-27T08:01:50.891Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Java虚拟机》学习笔记（4）">
+<meta name="twitter:description" content="本文学习了虚拟机类加载机制。虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。在Java语言里，类型的加载、连接和初始化过程都是在程序运行期间完成的。这是Java的可以动态扩展的语言特性。">
+  
+    <link rel="alternative" href="/atom.xml" title="不要笑我的笨" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://yeluffy0601.github.io/assets/blogImg/luffy.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Boom</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">梦想是一定要有的.. 万一实现了呢..</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/yeluffy0601/" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/ddupfly" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/《深入理解Java虚拟机》/" style="font-size: 10px;">《深入理解Java虚拟机》</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">本人聪明但不够勤奋，所幸觉醒的未晚，决心在此深入钻研技术、夯实基础。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Boom</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://yeluffy0601.github.io/assets/blogImg/luffy.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Boom</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">梦想是一定要有的.. 万一实现了呢..</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/yeluffy0601/" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/ddupfly" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-JVM-4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/08/27/JVM-4/" class="article-date">
+  	<time datetime="2015-08-27T03:30:11.000Z" itemprop="datePublished">2015-08-27</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《深入理解Java虚拟机》学习笔记（4）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/《深入理解Java虚拟机》/">《深入理解Java虚拟机》</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文学习了虚拟机类加载机制。<br>虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。<br>在Java语言里，类型的加载、连接和初始化过程都是在程序运行期间完成的。这是Java的可以动态扩展的语言特性。<br><a id="more"></a></p>
+<h1 id="1-_类加载的时机">1. 类加载的时机</h1><p>类从被加载到虚拟机内存中开始，到卸载出内存为止，它的整个生命周期包括：加载，验证，准备，解析，初始化，使用和卸载7个阶段。其中验证，准备，解析3个部分统称为连接。<br>加载，验证，准备，初始化和卸载这5个阶段的顺序是确定的，解析不一定，某些情况下可以在初始化阶段之后再开始，这是为了支持Java语言的运行时绑定（也称为动态绑定或晚期绑定）。<br>类加载的第一阶段，加载，交给虚拟机的具体实现来只有把握，但初始化阶段，规定了有且只有5种情况必须立即对类进行初始化：</p>
+<ul>
+<li>遇到new、getstatic、putstatic、invokestatic这4条字节码指令时。最常见的代码场景是：使用new关键字实例化对象的时候、读取或设置一个类的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）的时候，以及调用一个类的静态方法的时候。</li>
+<li>使用java.lang.reflect包的方法对类进行反射调用的时候。</li>
+<li>当初始化一个类的时候，如果其父类还没有进行初始化。</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含main()方法的那个类）。</li>
+<li>当使用JDK1.7的动态语言支持时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄所对应的类没有进行过初始化。<br>这5种场景中的行为称为对一个类进行主动引用。除此之外，所有引用类的方式都不会触发初始化，称为被动引用。<br>接口也有初始化过程，接口与类的区别在第三种，一个接口在初始化时，并不要求其父接口全部都完成了初始化，只有在真正使用到父接口的时候（如引用接口中定义的常量）才会初始化。</li>
+</ul>
+<h1 id="2-_类加载的过程">2. 类加载的过程</h1><p>7阶段的前5阶段为类加载的全过程，加载，验证，准备，解析，初始化。</p>
+<ol>
+<li>加载<br>虚拟机需要完成以下3件事情：<ul>
+<li>通过一个类的全限定名来获取定义此类的二进制字节流。</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</li>
+<li>在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口。</li>
+</ul>
+</li>
+<li>验证<br>验证是连接阶段的第一步，目的是为了确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。如果验证到输入的字节流不符合Class文件格式的约束，虚拟机抛出java.lang.VerifyError异常或其子类异常。<br>从整体上看，验证阶段大致会完成下面4个阶段的检索动作：文件格式验证、元数据验证、字节码验证、符号引用验证。<ul>
+<li>文件格式验证<br>验证字节流是否符合Class文件格式的规范，并且能被当前版本的虚拟机处理。主要目的是保证输入的字节流能正确地解析并存储于方法区之内。</li>
+<li>元数据验证<br>对字节码描述的信息进行语义分析。主要目的是对类的元数据信息进行语义校验，保证不存在不符合Java语言规范的元数据信息。</li>
+<li>字节码验证<br>主要目的是通过数据流和控制流分析，确定程序语义是合法、符合逻辑的。对类的方法体进行校验分析，保证被校验类的方法在运行时不会做出危害虚拟机安全的事。</li>
+<li>符号引用验证<br>可以看做是对类自身以外（常量池中的各种符号引用）的信息进行匹配性校验。目的是确保解析动作能正常执行。</li>
+</ul>
+</li>
+<li>准备<br>正式为类变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区中进行分配。这时候进行内存分配的仅包含类变量（static变量），而不包括实例变量。</li>
+<li>解析<br>虚拟机将常量池内的符号引用替换为直接引用的过程。</li>
+<li>初始化<br>真正开始执行类中定义的Java程序代码（字节码）。执行初始化，是所有类变量的赋值动作和静态语句块，非构造函数。多线程下，能被正确的加锁，同步。只会有一个线程去初始化一个类，其余线程等待。</li>
+</ol>
+<h1 id="3-_类加载器">3. 类加载器</h1><p>通过一个类的全限定名来获取描述此类的二进制字节流，被类加载器实现。</p>
+<ol>
+<li><p>类与类加载器<br>对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。</p>
+<figure class="highlight d"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> ClassLoaderTest &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(String[] args) throws InstantiationException,</span><br><span class="line">            IllegalAccessException, ClassNotFoundException &#123;</span><br><span class="line">        ClassLoader myLoader = <span class="keyword">new</span> ClassLoader() &#123;</span><br><span class="line">		<span class="keyword">@Override</span></span><br><span class="line">		<span class="keyword">public</span> Class&lt;?&gt; loadClass(String name) throws ClassNotFoundException &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				String className = name.substring(name.lastIndexOf(<span class="string">"."</span>) + <span class="number">1</span>) + <span class="string">".class"</span>;</span><br><span class="line">				<span class="comment">//返回读取指定资源的输入流</span></span><br><span class="line">				InputStream <span class="keyword">is</span> = getClass().getResourceAsStream(className);</span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">is</span> == <span class="literal">null</span>) <span class="keyword">return</span> <span class="keyword">super</span>.loadClass(name);</span><br><span class="line">				<span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="keyword">is</span>.available()];</span><br><span class="line">				<span class="keyword">is</span>.read(b);</span><br><span class="line">				<span class="comment">//将一个byte数组转换为Class类的实例</span></span><br><span class="line">				<span class="keyword">return</span> defineClass(name, b, <span class="number">0</span>, b.length);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> ClassNotFoundException(name);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	Object object = myLoader.loadClass(<span class="string">"test.ClassLoaderTest"</span>).newInstance();</span><br><span class="line">	System.<span class="keyword">out</span>.println(object.getClass());</span><br><span class="line">	System.<span class="keyword">out</span>.println(object instanceof test.ClassLoaderTest);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">-------------------------</span><br><span class="line"><span class="keyword">class</span> test.ClassLoaderTest</span><br><span class="line"><span class="literal">false</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>双亲委派模型<br>从Java虚拟机的角度来看，只存在两种不同的类加载器：一种是启动类加载器，由C++实现，是虚拟机自身的一部分；另一种是所有其他的类加载器，由Java实现，独立于虚拟机外部，并全部继承java.lang.ClassLoader。<br>从开发人员角度来看，类加载器可以划分得更细致一些。</p>
+<ul>
+<li>启动类加载器：<java_home>\lib目录下的类库。</java_home></li>
+<li>扩展类加载器：<java_home>\lib\ext目录下的类库。</java_home></li>
+<li>应用程序类加载器：也称系统类加载器，加载用户类路径（ClassPath）上类库，默认的类加载器。<br><img src="http://www.ddupfly.com/assets/4/1.jpg" alt=""><br>该类加载器之间的关系成为类加载器的双亲委派模型。要求除了顶层的启动类加载器外，其余的类加载器都应当有自己的父类加载器。这里的父子关系一般不会以继承，而是组合的方式来复用。双亲委派模型是在JDK1.2期间引入，并不是一个强制性约束模型。<br>工作过程：如果一个类加载器收到类加载的请求，它首先不会自己去尝试加载这个类，而是把请求委派给父类加载器去完成。只有当父类加载器反馈自己无法完成（它搜索范围内没有找到所需的类）时，子加载器才会尝试去加载。<br>显而易见的好处是，Java类随着它的类加载器一起具备了一种带有优先级的层次关系，例如java.lang.Object，Object在程序的各个类加载器环境中都是同一个类。这对Java程序的稳定运作十分重要。</li>
+</ul>
+</li>
+<li>破坏双亲委派模型<br>主要出现过3次大规模的“被破坏”情况。<ul>
+<li>JDK1.2发布之前，解决方法：JDK1.2之后，ClassLoader增加新的protected方法findClass()。</li>
+<li>自身的缺陷，基础类想调用回用户的代码。解决方法：线程上下文类加载器。</li>
+<li>对程序动态性的追求，例如代码热替换，模块热部署。解决方法：OSGi（Java模块化标准），它自定义了类加载机制，每一个程序模块Bundle都有一个自己的类加载器。OSGi环境下，类加载器不再是双亲委派模型中的树状结构，而是进一步发展为更加复杂网状结构。</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/08/26/JVM-3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">《深入理解Java虚拟机》学习笔记（3）</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="JVM-4" data-title="《深入理解Java虚拟机》学习笔记（4）" data-url="http://yoursite.com/2015/08/27/JVM-4/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"ddupfly"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 Boom
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
