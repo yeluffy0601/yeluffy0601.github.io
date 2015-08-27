@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="不要笑我的笨">
 <meta property="og:description" content="本文学习了虚拟机类加载机制。虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。在Java语言里，类型的加载、连接和初始化过程都是在程序运行期间完成的。这是Java的可以动态扩展的语言特性。">
 <meta property="og:image" content="http://www.ddupfly.com/assets/4/1.jpg">
-<meta property="og:updated_time" content="2015-08-27T08:01:50.891Z">
+<meta property="og:updated_time" content="2015-08-27T08:12:19.796Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《深入理解Java虚拟机》学习笔记（4）">
 <meta name="twitter:description" content="本文学习了虚拟机类加载机制。虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。在Java语言里，类型的加载、连接和初始化过程都是在程序运行期间完成的。这是Java的可以动态扩展的语言特性。">
@@ -239,8 +239,8 @@
 </li>
 <li><p>双亲委派模型<br>从Java虚拟机的角度来看，只存在两种不同的类加载器：一种是启动类加载器，由C++实现，是虚拟机自身的一部分；另一种是所有其他的类加载器，由Java实现，独立于虚拟机外部，并全部继承java.lang.ClassLoader。<br>从开发人员角度来看，类加载器可以划分得更细致一些。</p>
 <ul>
-<li>启动类加载器：<java_home>\lib目录下的类库。</java_home></li>
-<li>扩展类加载器：<java_home>\lib\ext目录下的类库。</java_home></li>
+<li>启动类加载器：<code>&lt;JAVA_HOME&gt;\lib</code>目录下的类库。</li>
+<li>扩展类加载器：<code>&lt;JAVA_HOME&gt;\lib\ext</code>目录下的类库。</li>
 <li>应用程序类加载器：也称系统类加载器，加载用户类路径（ClassPath）上类库，默认的类加载器。<br><img src="http://www.ddupfly.com/assets/4/1.jpg" alt=""><br>该类加载器之间的关系成为类加载器的双亲委派模型。要求除了顶层的启动类加载器外，其余的类加载器都应当有自己的父类加载器。这里的父子关系一般不会以继承，而是组合的方式来复用。双亲委派模型是在JDK1.2期间引入，并不是一个强制性约束模型。<br>工作过程：如果一个类加载器收到类加载的请求，它首先不会自己去尝试加载这个类，而是把请求委派给父类加载器去完成。只有当父类加载器反馈自己无法完成（它搜索范围内没有找到所需的类）时，子加载器才会尝试去加载。<br>显而易见的好处是，Java类随着它的类加载器一起具备了一种带有优先级的层次关系，例如java.lang.Object，Object在程序的各个类加载器环境中都是同一个类。这对Java程序的稳定运作十分重要。</li>
 </ul>
 </li>
