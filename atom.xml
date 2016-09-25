@@ -4,7 +4,7 @@
   <subtitle><![CDATA[To be a better man.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2016-09-17T03:55:55.411Z</updated>
+  <updated>2016-09-25T14:08:33.300Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -13,6 +13,23 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[20160925]]></title>
+    <link href="http://yoursite.com/2016/09/25/20160925/"/>
+    <id>http://yoursite.com/2016/09/25/20160925/</id>
+    <published>2016-09-24T16:00:00.000Z</published>
+    <updated>2016-09-25T14:08:33.300Z</updated>
+    <content type="html"><![CDATA[<p>20160925<br><a id="more"></a><br>日子过的很无味。<br>好像做了很多事，又好像什么事也没做。<br>我真的一蹶不振了么，每天混混沌沌的，我这么颓废是在做什么！<br>虽然在备忘录上记下了爸爸的生日，但前几天生日的时候还是忘记了祝福，今天突然想起，好自责。<br>其他也没什么想记录的了，今年经历的事都是大学辜负了小强的报应。<br>我知道的，一模一样全部还回来了，我又能怪谁。<br>生而为人，真是抱歉。<br>来世真的不要再做人了，太难。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>20160925<br>]]>
+    
+    </summary>
+    
+      <category term="日记" scheme="http://yoursite.com/tags/%E6%97%A5%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[20160917]]></title>
